@@ -93,8 +93,8 @@ export function DeviceDetail({ device, history, ledBusy, onToggleLed }: DeviceDe
               </tr>
             </thead>
             <tbody>
-              {recent.map((row) => (
-                <tr key={row.ts}>
+              {recent.map((row, index) => (
+                <tr key={`${row.ts}-${index}`}>
                   <td>{new Date(row.ts).toLocaleTimeString("zh-CN")}</td>
                   <td>{row.tempC.toFixed(1)}°C</td>
                   <td>{row.humidity.toFixed(0)}%</td>
