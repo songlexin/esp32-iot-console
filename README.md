@@ -66,7 +66,7 @@ flowchart LR
 
 | 服务 | 端口 |
 | --- | --- |
-| 控制台（Docker Nginx） | `80` |
+| 控制台（Docker 里的 Nginx） | `8088` |
 | Java 后端 | `8080` |
 | Vite 开发服务器 | `5173` |
 | Mosquitto | `1883` |
@@ -79,7 +79,9 @@ flowchart LR
 docker compose up --build
 ```
 
-浏览器打开 <http://localhost/> 。Compose 会启动 broker、Java、前端和 **2 台模拟 ESP32**。稍等后端连上 MQTT 后，侧栏会出现「模拟器 01 / 02」，温度湿度持续刷新，点击「板载 LED」可看到灯状态回传。
+浏览器打开 <http://localhost:8088/> 。Compose 会启动 broker、Java、前端和 **2 台模拟 ESP32**。稍等后端连上 MQTT 后，侧栏会出现「模拟器 01 / 02」，温度湿度持续刷新，点击「板载 LED」可看到灯状态回传。
+
+如果你打开 <http://localhost/> 只看到英文 **Welcome to nginx!**，那是电脑上**另一套**已经占用 80 端口的 Nginx 欢迎页，不是本控制台。本项目没有要求你单独安装 Nginx；Docker 前端镜像里自带一份，只用来发网页。请改用 <http://localhost:8088/> 。
 
 停止：
 
@@ -229,6 +231,19 @@ pio device monitor      # 115200 观察 Wi-Fi / MQTT 日志
 5. 若前端仍用 Vite 直连 Java，把 `CORS_ORIGINS` 加上实际访问源。
 
 本仓库不会、也不应当去连接、扫描或登录 `116.62.158.35`。
+
+## Windows 常见问题
+
+**打开 localhost 出现 Welcome to nginx!**  
+你多半没有为这个项目单独装过 Nginx。Docker 前端镜像里自带 Nginx，只负责把网页发出去。`localhost:80` 上那份欢迎页通常是电脑里以前就有的 Nginx / 宝塔 / phpstudy / 其它容器。本控制台在 Docker 下请用 <http://localhost:8088/> 。
+
+先确认容器都起来了：
+
+```bash
+docker compose ps
+```
+
+再试采集端是否活着：<http://localhost:8080/api/health> 应返回 `"status":"UP"`。
 
 ## 目录
 
